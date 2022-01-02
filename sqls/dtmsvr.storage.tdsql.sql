@@ -12,19 +12,20 @@ CREATE TABLE if not EXISTS dtm.trans_global (
   `protocol` varchar(45) not null comment '通信协议 http | grpc',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
+  `commit_time` datetime DEFAULT NULL,
   `finish_time` datetime DEFAULT NULL,
   `rollback_time` datetime DEFAULT NULL,
-  `options` varchar(1024) DEFAULT '',
+  `options` varchar(256) DEFAULT '',
   `custom_data` varchar(256) DEFAULT '',
   `next_cron_interval` int(11) default null comment '下次定时处理的间隔',
   `next_cron_time` datetime default null comment '下次定时处理的时间',
   `owner` varchar(128) not null default '' comment '正在处理全局事务的锁定者',
-  `ext_data` TEXT comment 'global扩展字段的数据',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`,`gid`),
+  UNIQUE KEY `id` (`id`,`gid`),
   UNIQUE KEY `gid` (`gid`),
   key `owner`(`owner`),
   key `status_next_cron_time` (`status`, `next_cron_time`) comment '这个索引用于查询超时的全局事务，能够合理的走索引'
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 shardkey=gid;
 drop table IF EXISTS dtm.trans_branch_op;
 CREATE TABLE IF NOT EXISTS dtm.trans_branch_op (
   `id` bigint(22) NOT NULL AUTO_INCREMENT,
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS dtm.trans_branch_op (
   `rollback_time` datetime DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`,`gid`),
+  UNIQUE KEY `id` (`id`,`gid`),
   UNIQUE KEY `gid_uniq` (`gid`, `branch_id`, `op`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 shardkey=gid;
