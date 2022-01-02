@@ -9,14 +9,14 @@ import (
 // Metric: <metric name>{<label name>=<label value>, ...}
 var (
 	globalTransactionTotal = promauto.NewCounterVec(prometheus.CounterOpts{
-		Name: "dtm_global_transaction_total",
-		Help: "Count all transactions processed by dtm with diff model and status",
+		Name: "tm_global_transaction_total",
+		Help: "All transactions processed by tm",
 	},
 		[]string{"role", "model", "status"})
 
 	globalTransactionCost = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "dtm_global_transaction_cost",
-		Help: "Count all transactions request cost by dtm with diff model and status",
+		Name: "tm_global_transaction_cost",
+		Help: "All transactions cost time by tm",
 	},
 		[]string{"role", "model", "status"})
 )
